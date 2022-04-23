@@ -1,0 +1,174 @@
+<div class="container-fluid">
+    <h3>Listado de POS</h3>
+    <hr />
+    <!-- Button trigger modal -->
+    <button type="button" class="mb-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#posModal"
+        (click)="cleanForm()">
+        Agregar POS
+    </button>
+
+    <!-- Modal insert -->
+    <div class="modal fade m-3" id="posModal" tabindex="-1" aria-labelledby="posModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="posModalLabel" *ngIf="newPos.id == 0 else elseBlockTitle">
+                        Agregar
+                        POS
+                    </h5>
+                    <ng-template #elseBlockTitle>
+                        <h5>Editar POS</h5>
+                    </ng-template>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        #btnCerrar></button>
+                </div>
+                <form action="" #posForm="ngForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>ID:</label>
+                            <input type="text" [(ngModel)]="newPos.id" name="id" class="form-control"
+                                disabled="disabled" />
+                            <small class="form-text text-muted">Este campo es autogenerado</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="formNroSerie" class="form-label">Nro de serie:</label>
+                            <input type="text" class="form-control" id="formNroSerie" name="nro_serie"
+                                [(ngModel)]="newPos.nro_serie" #nro_serie="ngModel" required minlength="8" maxlength="8"
+                                placeholder="5B999999" pattern="[5]{1}[B,b,D,d]{1}[0-9]{6}" />
+                            <div class="alert alert-danger"
+                                *ngIf="nro_serie.invalid && (nro_serie.dirty || nro_serie.touched)">
+                                <div *ngIf="nro_serie.errors?.['required']">Nro de serie es requerido</div>
+                                <div *ngIf="nro_serie.errors?.['minlength']">
+                                    Nro de serie debe tener al menos 8
+                                    caracteres
+                                </div>
+                                <div *ngIf="nro_serie.errors?.['maxlength']">Nro de serie formato excedido</div>
+                                <div *ngIf="nro_serie.errors?.['pattern']">
+                                    Formato incorrecto. Ingrese un pos con nro de
+                                    serie valido
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="formModelo" class="form-label">
+                                Modelo:
+                            </label>
+                            <select [compareWith]="compareModelo" class="form-control" id="formModelo" name="modelo"
+                                [(ngModel)]="newPos.modelo" #modelo="ngModel" required>
+                                <option disabled [ngValue]="undefined">--- Seleccione un modelo ---</option>
+                                <option *ngFor="let modelo of modelos" [ngValue]="modelo">
+                                    {{ modelo.nombre_modelo }}
+                                </option>
+                            </select>
+                            <div class="alert alert-danger" *ngIf="modelo.invalid && (modelo.dirty || modelo.touched)">
+                                <div *ngIf="modelo.errors?.['required']">Modelo es requerido</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="formEmpresa" class="form-label">
+                                Empresa:
+                            </label>
+                            <select [compareWith]="compareEmpresa" class="form-control" id="formEmpresa" name="empresa"
+                                [(ngModel)]="newPos.empresa" #empresa="ngModel" required>
+                                <option disabled [ngValue]="undefined">--- Seleccione una empresa ---</option>
+                                <option *ngFor="let empresa of empresas" [ngValue]="empresa">
+                                    {{ empresa.nombre_empresa }}
+                                </option>
+                            </select>
+                            <div class="alert alert-danger"
+                                *ngIf="empresa.invalid && (empresa.dirty || empresa.touched)">
+                                <div *ngIf="empresa.errors?.['required']">Empresa es requerido</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="formFecha" class="form-label">Fecha de ingreso:</label>
+                            <input type="date" class="form-control" id="formFecha" name="fecha_ingreso"
+                                [(ngModel)]="this.newPos.fecha_ingreso" #fecha_ingreso="ngModel" required />
+                            <div class="alert alert-danger"
+                                *ngIf="fecha_ingreso.invalid && (fecha_ingreso.dirty || fecha_ingreso.touched)">
+                                <div *ngIf="fecha_ingreso.errors?.['required']">Fecha es requerido</div>
+                                <div *ngIf="fecha_ingreso.errors?.['date']">Debe ser una fecha valida</div>
+                                <div *ngIf="fecha_ingreso.errors?.['min']">Debe ingresar una fecha más actual</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="formObservacion" class="form-label">Observación:</label>
+                            <textarea class="form-control" id="formObservacion" name="observacion" rows="3"
+                                [(ngModel)]="newPos.observacion" #observacion="ngModel" required
+                                minlength="2"></textarea>
+                            <div class="alert alert-danger"
+                                *ngIf="observacion.invalid && (observacion.dirty || observacion.touched)">
+                                <div *ngIf="observacion.errors?.['required']">Observación es requerido</div>
+                                <div *ngIf="observacion.errors?.['minlength']">
+                                    Observación debe tener al menos 2
+                                    caracteres
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <button [disabled]="!posForm.form.valid" *ngIf="!newPos.id else elseBlock"
+                                    (click)="insertPos(posForm)" role="button" class="btn btn-success">
+                                    Save
+                                </button>
+                                <ng-template #elseBlock>
+                                    <button [disabled]="!posForm.form.valid" (click)="updatePos()" role="button"
+                                        class="btn btn-primary">
+                                        Update
+                                    </button>
+                                </ng-template>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--Fin add Modal-->
+    <!--Tabla con la lista-->
+    <div>
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>N°</th>
+                    <th>Nro de Serie</th>
+                    <th>Modelo</th>
+                    <th>Empresa</th>
+                    <th>Fecha de ingreso</th>
+                    <th>Observación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="posList?.length !=0">
+                <tr *ngFor="let pos of posList; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{ pos.nro_serie }}</td>
+                    <td>{{pos.modelo?.nombre_modelo}}</td>
+                    <td>{{pos.empresa?.nombre_empresa}}</td>
+                    <td>{{ pos.fecha_ingreso | date:"dd, MMMM yyyy"}}</td>
+                    <td>{{ pos.observacion }}</td>
+                    <td>
+                        <div>
+                            <button type="button" name="editar" data-bs-toggle="modal" data-bs-target="#posModal"
+                                (click)="onUpdateModalPos(pos.id)" class="m-2 btn btn-primary btn-sm">
+                                Editar
+                            </button>
+                            <button type="button" name="eliminar" (click)="deletePos(pos)"
+                                class="btn btn-danger btn-sm">
+                                Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="posList?.length == 0">
+                <tr>
+                    <td colspan="7" class="no-data-avaliable text-center">No data</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
