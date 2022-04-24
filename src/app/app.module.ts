@@ -9,13 +9,15 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { PosComponent } from './components/pos/pos.component';
 import { GestionService } from './services/gestion.service';
 import { ImpresorasComponent } from './components/impresoras/impresoras.component';
+import { CelularesComponent } from './components/celulares/celulares.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     PosComponent,
-    ImpresorasComponent
+    ImpresorasComponent,
+    CelularesComponent
   ],
   imports: [
     BrowserModule,

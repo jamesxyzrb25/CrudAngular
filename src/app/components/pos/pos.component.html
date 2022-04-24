@@ -26,15 +26,26 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>ID:</label>
-                            <input type="text" [(ngModel)]="newPos.id" name="id" class="form-control"
+                            <input 
+                                type="text" 
+                                [(ngModel)]="newPos.id" 
+                                name="id" 
+                                class="form-control"
                                 disabled="disabled" />
                             <small class="form-text text-muted">Este campo es autogenerado</small>
                         </div>
                         <div class="form-group">
                             <label for="formNroSerie" class="form-label">Nro de serie:</label>
-                            <input type="text" class="form-control" id="formNroSerie" name="nro_serie"
-                                [(ngModel)]="newPos.nro_serie" #nro_serie="ngModel" required minlength="8" maxlength="8"
-                                placeholder="5B999999" pattern="[5]{1}[B,b,D,d]{1}[0-9]{6}" />
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="formNroSerie" 
+                                name="nro_serie"
+                                [(ngModel)]="newPos.nro_serie" 
+                                #nro_serie="ngModel" 
+                                required minlength="8" maxlength="8"
+                                placeholder="5B999999" 
+                                pattern="[5]{1}[B,b,D,d]{1}[0-9]{6}" />
                             <div class="alert alert-danger"
                                 *ngIf="nro_serie.invalid && (nro_serie.dirty || nro_serie.touched)">
                                 <div *ngIf="nro_serie.errors?.['required']">Nro de serie es requerido</div>

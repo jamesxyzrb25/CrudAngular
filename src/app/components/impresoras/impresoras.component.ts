@@ -58,16 +58,6 @@ export class ImpresorasComponent implements OnInit {
     return false;
   }
 
-  insertImpresora({value}: {value: ImpresoraModel}){
-    this.gestionSrv.insertImpresora(value)
-      .subscribe(() => {
-          this.impresoras.push(value);
-          swal('Nueva Impresora', `La impresora id: ${value.id}| Nro de serie: ${value.codigo} ha sido creado con éxito`, 'success');
-    });
-    this.impresoraForm?.resetForm();
-    this.cerrarModal();
-    this.ngOnInit();
-  }
   private cerrarModal(){
     this.btnCerrar?.nativeElement.click();
   }
@@ -77,6 +67,17 @@ export class ImpresorasComponent implements OnInit {
     this.chRef.detectChanges();
     this.newImpresora.id = 0;
     this.newImpresora.fecha_ingreso = moment().format('YYYY-MM-DD');
+  }
+
+  insertImpresora({value}: {value: ImpresoraModel}){
+    this.gestionSrv.insertImpresora(value)
+      .subscribe(() => {
+          this.impresoras.push(value);
+          swal('Nueva Impresora', `La impresora id: ${value.id}| Nro de serie: ${value.codigo} ha sido creado con éxito`, 'success');
+    });
+    this.impresoraForm?.resetForm();
+    this.cerrarModal();
+    this.ngOnInit();
   }
 
   onUpdateModalImpresora(id?: number){

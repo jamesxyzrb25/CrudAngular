@@ -1,0 +1,211 @@
+<div class="container-fluid">
+    <h3>Listado de Celulares</h3>
+  <hr />
+  <!-- Button trigger modal -->
+  <button type="button" class="mb-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#celularModal"
+          (click)="cleanForm()">
+    Agregar Celular
+  </button>
+
+  <!-- Modal insert -->
+  <div class="modal fade m-3" id="celularModal" tabindex="-1" aria-labelledby="celularModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="celularModalLabel" *ngIf="newCelular.id == 0 else elseBlockTitle">
+            Agregar
+            Celular
+          </h5>
+          <ng-template #elseBlockTitle>
+            <h5>Editar Celular</h5>
+          </ng-template>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                  #btnCerrar></button>
+        </div>
+        <form action="" #celularForm="ngForm">
+          <div class="modal-body">
+            <div class="form-group row">
+              <label for="formNroImei"
+                     class="form-label">Nro IMEI:</label>
+              <input type="number" class="form-control" id="formNroImei" name="nro_imei"
+                     [(ngModel)]="newCelular.nro_imei" #nro_imei="ngModel" required minlength="15"
+                     maxlength="17" placeholder="352161436412345" pattern="[0-9]{15}" />
+              <div class="alert alert-danger"
+                   *ngIf="nro_imei.invalid && (nro_imei.dirty || nro_imei.touched)">
+                <div *ngIf="nro_imei.errors?.['required']">Nro IMEI es requerido</div>
+                <div *ngIf="nro_imei.errors?.['minlength']">
+                  Nro IMEI debe tener al menos 15
+                  caracteres
+                </div>
+                <div *ngIf="nro_imei.errors?.['maxlength']">IMEI numero de carácteres excedido</div>
+                <div *ngIf="nro_imei.errors?.['pattern']">
+                  Formato de IMEI incorrecto.
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="formNroCel"
+                     class="form-label">Nro Celular:</label>
+              <input 
+                type="tel" class="form-control" id="formNroCel" name="nro_celular"
+                [(ngModel)]="newCelular.nro_celular" #nro_celular="ngModel" 
+                required minlength="9" maxlength="9" pattern="[9]{1}[0-9]{8}" />
+                <div class="alert alert-danger"
+                   *ngIf="nro_celular.invalid && (nro_celular.dirty || nro_celular.touched)">
+                <div *ngIf="nro_celular.errors?.['required']">Nro celular es requerido</div>
+                <div *ngIf="nro_celular.errors?.['minlength']">
+                  Nro celular debe tener 9
+                  caracteres
+                </div>
+                <div *ngIf="nro_celular.errors?.['maxlength']">celular numero de carácteres excedido</div>
+                <div *ngIf="nro_celular.errors?.['pattern']">
+                  Formato de  numero de celular incorrecto.
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-group row">
+              <label for="formOperador" class="form-label">
+                Operador:
+              </label>
+              <select [compareWith]="compareOperador"
+                      class="form-control" id="formOperador" name="operador" [(ngModel)]="newCelular.operador"
+                      #operador="ngModel" required>
+                <option disabled [ngValue]="undefined">--- Seleccione un operador ---</option>
+                <option *ngFor="let operador of operadores" [ngValue]="operador">
+                  {{ operador.nombre_operador }}
+                </option>
+              </select>
+              <div class="alert alert-danger" *ngIf="operador.invalid && (operador.dirty || operador.touched)">
+                <div *ngIf="operador.errors?.['required']">Operador es requerido</div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="formModelo" class="form-label">
+                Modelo:
+              </label>
+              <select [compareWith]="compareModelo"
+                      class="form-control" id="formModelo" name="modelo" [(ngModel)]="newCelular.modelo"
+                      #modelo="ngModel" required>
+                <option disabled [ngValue]="undefined">--- Seleccione un modelo ---</option>
+                <option *ngFor="let modelo of modelos" [ngValue]="modelo">
+                  {{ modelo.nombre_modelo }}
+                </option>
+              </select>
+              <div class="alert alert-danger" *ngIf="modelo.invalid && (modelo.dirty || modelo.touched)">
+                <div *ngIf="modelo.errors?.['required']">Modelo es requerido</div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="formEmpresa" class="form-label">
+                Empresa:
+              </label>
+              <select [compareWith]="compareEmpresa"
+                      class="form-control" id="formEmpresa" name="empresa"
+                      [(ngModel)]="newCelular.empresa" #empresa="ngModel" required>
+                <option disabled [ngValue]="undefined">--- Seleccione una empresa ---</option>
+                <option *ngFor="let empresa of empresas" [ngValue]="empresa">
+                  {{ empresa.nombre_empresa }}
+                </option>
+              </select>
+              <div class="alert alert-danger"
+                   *ngIf="empresa.invalid && (empresa.dirty || empresa.touched)">
+                <div *ngIf="empresa.errors?.['required']">Empresa es requerido</div>
+              </div>
+            </div>
+            <div class="form-group">
+                <label for="formFecha" class="form-label">Fecha de ingreso:</label>
+                <input type="date" class="form-control" id="formFecha" name="fecha_ingreso"
+                    [(ngModel)]="this.newCelular.fecha_ingreso" #fecha_ingreso="ngModel" required />
+                <div class="alert alert-danger"
+                    *ngIf="fecha_ingreso.invalid && (fecha_ingreso.dirty || fecha_ingreso.touched)">
+                    <div *ngIf="fecha_ingreso.errors?.['required']">Fecha es requerido</div>
+                    <div *ngIf="fecha_ingreso.errors?.['date']">Debe ser una fecha valida</div>
+                    <div *ngIf="fecha_ingreso.errors?.['min']">Debe ingresar una fecha más actual</div>
+                </div>
+            </div>
+            <div class="form-group row">
+              <label for="formObservacion" class="form-label">Observación:</label>
+              <textarea class="form-control" id="formObservacion" name="observacion" rows="3"
+                        [(ngModel)]="newCelular.observacion" #observacion="ngModel" required
+                        minlength="2"></textarea>
+              <div class="alert alert-danger"
+                   *ngIf="observacion.invalid && (observacion.dirty || observacion.touched)">
+                <div *ngIf="observacion.errors?.['required']">Observación es requerido</div>
+                <div *ngIf="observacion.errors?.['minlength']">
+                  Observación debe tener al menos 2
+                  caracteres
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <button [disabled]="!celularForm.form.valid" *ngIf="!newCelular.id else elseBlock"
+                        (click)="insertCelular(celularForm)" role="button" class="btn btn-success">
+                  Save
+                </button>
+                <ng-template #elseBlock>
+                  <button [disabled]="!celularForm.form.valid" (click)="updateCelular()" role="button"
+                          class="btn btn-primary">
+                    Update
+                  </button>
+                </ng-template>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+    <!--Fin modal insert-->
+    <!--Tabla con la lista-->
+    <div>
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>N°</th>
+                    <th>IMEI</th>
+                    <th>Nro de celular</th>
+                    <th>Modelo</th>
+                    <th>Operador</th>
+                    <th>Empresa</th>
+                    <th>Fecha de ingreso</th>
+                    <th>Observación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="celulares?.length !=0">
+                <tr *ngFor="let celular of celulares; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{ celular.nro_imei }}</td>
+                    <td>{{celular.nro_celular}}</td>
+                    <td>{{celular.modelo?.nombre_modelo}}</td>
+                    <td>{{celular.operador?.nombre_operador}}</td>
+                    <td>{{celular.empresa?.nombre_empresa}}</td>
+                    <td>{{ celular.fecha_ingreso | date:"dd, MMMM yyyy"}}</td>
+                    <td>{{ celular.observacion }}</td>
+                    <td>
+                        <div>
+                            <button type="button" name="editar" data-bs-toggle="modal" data-bs-target="#celularModal"
+                                (click)="onUpdateModalCelular(celular.id)" class="m-2 btn btn-primary btn-sm">
+                                Editar
+                            </button>
+                            <button type="button" name="eliminar" (click)="deleteCelular(celular)"
+                                class="btn btn-danger btn-sm">
+                                Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="celulares?.length == 0">
+                <tr>
+                    <td colspan="7" class="no-data-avaliable text-center">No data</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

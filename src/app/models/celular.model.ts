@@ -1,15 +1,16 @@
-import { Empresa } from "./empresa.model";
-import { Modelo } from "./modelo.model";
-import { Operador } from "./operador.model";
+import { EmpresaModel } from "./empresa.model";
+import { ModeloModel } from "./modelo.model";
+import { OperadorModel } from "./operador.model";
 
-export class Celular {
+export class CelularModel {
   constructor(
     public id?: number,
     public nro_imei?: string,
     public nro_celular?: string,
-    public operador?: Operador,
-    public modelo?: Modelo,
-    public empresa?: Empresa,
+    public operador?: OperadorModel,
+    public modelo?: ModeloModel,
+    public empresa?: EmpresaModel,
+    public fecha_ingreso?: string,
     public observacion?: string
 
   ) {}

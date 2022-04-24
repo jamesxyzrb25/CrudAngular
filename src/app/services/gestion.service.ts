@@ -2,9 +2,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import swal from 'sweetalert2';
+import { CelularModel } from '../models/celular.model';
 import { EmpresaModel } from '../models/empresa.model';
 import { ImpresoraModel } from '../models/impresora.model';
 import { ModeloModel } from '../models/modelo.model';
+import { OperadorModel } from '../models/operador.model';
 
 import { PosModel } from '../models/pos.model';
 
@@ -19,6 +21,7 @@ export class GestionService {
   private urlEndPointModeloPos = 'http://localhost:8080/api/modeloPosList';
   private urlEndPointModeloCelular = 'http://localhost:8080/api/modeloCelularList';
   private urlEndPointModeloImpresora = 'http://localhost:8080/api/modeloImpresoraList';
+  private urlEndPointOperadores = 'http://localhost:8080/api/operadorList';
 
   private urlEndPointPos = 'http://localhost:8080/api/pos';
   private urlEndPointCelulares = 'http://localhost:8080/api/celulares';
@@ -26,12 +29,15 @@ export class GestionService {
 
   constructor(private http:HttpClient) { }
 
-  //Listar todos los pos
+  //Listar 
   getPosList(): Observable<PosModel[]> {
     return this.http.get<PosModel[]>(this.urlEndPointPos);
   }
   getImpresoras(): Observable<ImpresoraModel[]>{
     return this.http.get<ImpresoraModel[]>(this.urlEndPointImpresoras);
+  }
+  getCelulares(): Observable<CelularModel[]>{
+    return this.http.get<CelularModel[]>(this.urlEndPointCelulares);
   }
   //Buscar por id
   getPosId(id: number):Observable<PosModel> {
@@ -40,7 +46,10 @@ export class GestionService {
   getImpresoraId(id: number):Observable<ImpresoraModel>{
     return this.http.get<ImpresoraModel>(this.urlEndPointImpresoras+"/"+id, {headers: this.httpHeaders});
   }
-  //Insertar un nuevo pos
+  getCelularId(id: number):Observable<CelularModel>{
+    return this.http.get<CelularModel>(this.urlEndPointCelulares+"/"+id, {headers: this.httpHeaders});
+  }
+  //Insertar 
   insertPos(pos: PosModel){
     console.log('Se ha agregado correctamente el pos');
     return this.http.post(this.urlEndPointPos, pos, {headers: this.httpHeaders})
@@ -52,12 +61,22 @@ export class GestionService {
             )
   }
   insertImpresora(impresora: ImpresoraModel){
-    console.log('Se ha agregado correctamente el pos');
+    console.log('Se ha agregado correctamente la impresora');
     return this.http.post(this.urlEndPointImpresoras, impresora, {headers: this.httpHeaders})
             .pipe(
               map((resp:any) =>{
                 impresora.id = resp.id;
                 return impresora;
+              })
+            )
+  }
+  insertCelular(celular: CelularModel){
+    console.log('Se ha agregado correctamente el celular');
+    return this.http.post(this.urlEndPointCelulares, celular, {headers: this.httpHeaders})
+            .pipe(
+              map((resp:any) =>{
+                celular.id = resp.id;
+                return celular;
               })
             )
   }
@@ -88,6 +107,19 @@ export class GestionService {
       })
     );
   }
+  updateCelular(celular:CelularModel):Observable<any> {
+    console.log('Se ha actualizado correctamente la impresora');
+    return this.http.put<any>(`${this.urlEndPointCelulares}/${celular.id}`, celular,{ headers: this.httpHeaders }).pipe(
+      catchError(e =>{
+        if(e.status == 400){
+          return throwError(e);
+        }
+        console.error(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );
+  }
 
   //Eliminar
   deletePos(id?:number): Observable<PosModel> {
@@ -100,6 +132,14 @@ export class GestionService {
   }
   deleteImpresora(id?:number): Observable<ImpresoraModel> {
     return this.http.delete<ImpresoraModel>(`${this.urlEndPointImpresoras}/${id}`,{headers: this.httpHeaders}).pipe(
+      catchError(e => {
+        console.error(e.error.mensaje);
+        return throwError(e);
+      })
+    );
+  }
+  deleteCelular(id?:number): Observable<CelularModel> {
+    return this.http.delete<CelularModel>(`${this.urlEndPointCelulares}/${id}`,{headers: this.httpHeaders}).pipe(
       catchError(e => {
         console.error(e.error.mensaje);
         return throwError(e);
@@ -121,6 +161,9 @@ export class GestionService {
   getModeloImpresoras(): Observable<ModeloModel[]> {
     return this.http.get<ModeloModel[]>(this.urlEndPointModeloImpresora);
   }
-
+  //Operadores
+  getOperadores():Observable<OperadorModel[]>{
+    return this.http.get<OperadorModel[]>(this.urlEndPointOperadores);
+  }
 
 }
