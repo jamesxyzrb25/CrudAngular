@@ -9,6 +9,7 @@ import { ModeloModel } from '../models/modelo.model';
 import { OperadorModel } from '../models/operador.model';
 
 import { PosModel } from '../models/pos.model';
+import { ValidadorModel } from '../models/validador.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,9 +24,15 @@ export class GestionService {
   private urlEndPointModeloImpresora = 'http://localhost:8080/api/modeloImpresoraList';
   private urlEndPointOperadores = 'http://localhost:8080/api/operadorList';
 
+  private urlEndPointPosxEmpresa = 'http://localhost:8080/api/posxEmpresa';
+  private urlEndPointCelularesxEmpresa = 'http://localhost:8080/api/celularesxEmpresa';
+  private urlEndPointImpresorasxEmpresa = 'http://localhost:8080/api/impresorasxEmpresa';
+
   private urlEndPointPos = 'http://localhost:8080/api/pos';
   private urlEndPointCelulares = 'http://localhost:8080/api/celulares';
   private urlEndPointImpresoras = 'http://localhost:8080/api/impresoras';
+  private urlEndPointValidadores = 'http://localhost:8080/api/validadores';
+
 
   constructor(private http:HttpClient) { }
 
@@ -39,6 +46,9 @@ export class GestionService {
   getCelulares(): Observable<CelularModel[]>{
     return this.http.get<CelularModel[]>(this.urlEndPointCelulares);
   }
+  getValidadores():Observable<ValidadorModel[]>{
+    return this.http.get<ValidadorModel[]>(this.urlEndPointValidadores);
+  }
   //Buscar por id
   getPosId(id: number):Observable<PosModel> {
     return this.http.get<PosModel>(this.urlEndPointPos+"/"+id, {headers: this.httpHeaders});
@@ -48,6 +58,9 @@ export class GestionService {
   }
   getCelularId(id: number):Observable<CelularModel>{
     return this.http.get<CelularModel>(this.urlEndPointCelulares+"/"+id, {headers: this.httpHeaders});
+  }
+  getValidadorId(id: number):Observable<ValidadorModel>{
+    return this.http.get<ValidadorModel>(this.urlEndPointValidadores+"/"+id,{headers:this.httpHeaders});
   }
   //Insertar 
   insertPos(pos: PosModel){
@@ -76,7 +89,19 @@ export class GestionService {
             .pipe(
               map((resp:any) =>{
                 celular.id = resp.id;
+                console.log("La respuesta es: "+JSON.stringify(resp));
+                console.log("El celular es: "+JSON.stringify(celular));
                 return celular;
+              })
+            )
+  }
+  insertValidador(validador:ValidadorModel){
+    console.log('Se ha agregado correctamente el validador');
+    return this.http.post(this.urlEndPointValidadores, validador, {headers: this.httpHeaders})
+            .pipe(
+              map((resp:any) =>{
+                validador.id = resp.id;
+                return validador;
               })
             )
   }
@@ -120,7 +145,19 @@ export class GestionService {
       })
     );
   }
-
+  updateValidador(validador: ValidadorModel):Observable<any> {
+    console.log('Se ha actualizado correctamente el validador');
+    return this.http.put<any>(`${this.urlEndPointValidadores}/${validador.id}`, validador,{ headers: this.httpHeaders }).pipe(
+      catchError(e =>{
+        if(e.status == 400){
+          return throwError(e);
+        }
+        console.error(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );
+  }
   //Eliminar
   deletePos(id?:number): Observable<PosModel> {
     return this.http.delete<PosModel>(`${this.urlEndPointPos}/${id}`,{headers: this.httpHeaders}).pipe(
@@ -146,6 +183,14 @@ export class GestionService {
       })
     );
   }
+  deleteValidador(id?:number): Observable<ValidadorModel> {
+    return this.http.delete<ValidadorModel>(`${this.urlEndPointValidadores}/${id}`,{headers: this.httpHeaders}).pipe(
+      catchError(e => {
+        console.error(e.error.mensaje);
+        return throwError(e);
+      })
+    );
+  }
 
   //Empresa
   getEmpresaList(): Observable<EmpresaModel[]> {
@@ -165,5 +210,16 @@ export class GestionService {
   getOperadores():Observable<OperadorModel[]>{
     return this.http.get<OperadorModel[]>(this.urlEndPointOperadores);
   }
+  getPosxEmpresa(id: number):Observable<PosModel[]> {
+    return this.http.get<PosModel[]>(this.urlEndPointPosxEmpresa+"/"+id, {headers: this.httpHeaders});
+  }
+  getCelularesxEmpresa(id: number):Observable<CelularModel[]> {
+    return this.http.get<CelularModel[]>(this.urlEndPointCelularesxEmpresa+"/"+id, {headers: this.httpHeaders});
+  }
+  getImpresorasxEmpresa(id: number):Observable<ImpresoraModel[]> {
+    return this.http.get<ImpresoraModel[]>(this.urlEndPointImpresorasxEmpresa+"/"+id, {headers: this.httpHeaders});
+  }
+
+
 
 }

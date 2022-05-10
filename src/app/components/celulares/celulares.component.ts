@@ -31,11 +31,10 @@ export class CelularesComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.chRef.detectChanges();
     this.gestionSrv.getCelulares()
       .subscribe(result =>{
         this.celulares = result;
-        this.chRef.detectChanges();
-        console.log(this.celulares);
       });
 
       this.gestionSrv.getEmpresaList()
@@ -86,7 +85,7 @@ export class CelularesComponent implements OnInit {
     this.gestionSrv.insertCelular(value)
       .subscribe(() => {
           this.celulares.push(value);
-          swal('Nuevo celular', `IMEI: ${value.nro_imei},Numero cel: ${value.nro_celular}, Operador: ${value.operador} ha sido creado con éxito`, 'success');
+          swal('Nuevo celular', `IMEI: ${value.nro_imei},Numero cel: ${value.nro_cel}, Operador: ${value.operador} ha sido creado con éxito`, 'success');
     });
     this.celularForm?.resetForm();
     this.cerrarModal();

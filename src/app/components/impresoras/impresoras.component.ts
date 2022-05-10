@@ -29,10 +29,10 @@ export class ImpresorasComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.chRef.detectChanges();
     this.gestionSrv.getImpresoras()
       .subscribe(result =>{
         this.impresoras = result;
-        this.chRef.detectChanges();
       });
 
     this.gestionSrv.getEmpresaList()

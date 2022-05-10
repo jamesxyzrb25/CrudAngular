@@ -27,39 +27,38 @@
             <div class="form-group row">
               <label for="formNroImei"
                      class="form-label">Nro IMEI:</label>
-              <input type="number" class="form-control" id="formNroImei" name="nro_imei"
-                     [(ngModel)]="newCelular.nro_imei" #nro_imei="ngModel" required minlength="15"
-                     maxlength="17" placeholder="352161436412345" pattern="[0-9]{15}" />
-              <div class="alert alert-danger"
+              <input 
+                type="text" class="form-control" id="formNroImei" name="nro_imei"
+                [(ngModel)]="newCelular.nro_imei" #nro_imei="ngModel" placeholder="352161436412345"
+                required minlength="15" maxlength="15" pattern="[0-9]{15}" />
+                <div class="alert alert-danger"
                    *ngIf="nro_imei.invalid && (nro_imei.dirty || nro_imei.touched)">
-                <div *ngIf="nro_imei.errors?.['required']">Nro IMEI es requerido</div>
+                <div *ngIf="nro_imei.errors?.['required']">Nro imei es requerido</div>
                 <div *ngIf="nro_imei.errors?.['minlength']">
-                  Nro IMEI debe tener al menos 15
+                  Nro imei debe tener 15
                   caracteres
                 </div>
-                <div *ngIf="nro_imei.errors?.['maxlength']">IMEI numero de carácteres excedido</div>
+                <div *ngIf="nro_imei.errors?.['maxlength']">imei numero de carácteres excedido</div>
                 <div *ngIf="nro_imei.errors?.['pattern']">
-                  Formato de IMEI incorrecto.
+                  Formato de  numero de imei incorrecto.
                 </div>
               </div>
             </div>
             <div class="form-group row">
               <label for="formNroCel"
-                     class="form-label">Nro Celular:</label>
-              <input 
-                type="tel" class="form-control" id="formNroCel" name="nro_celular"
-                [(ngModel)]="newCelular.nro_celular" #nro_celular="ngModel" 
-                required minlength="9" maxlength="9" pattern="[9]{1}[0-9]{8}" />
-                <div class="alert alert-danger"
-                   *ngIf="nro_celular.invalid && (nro_celular.dirty || nro_celular.touched)">
-                <div *ngIf="nro_celular.errors?.['required']">Nro celular es requerido</div>
-                <div *ngIf="nro_celular.errors?.['minlength']">
-                  Nro celular debe tener 9
-                  caracteres
+                     class="form-label">Numero Celular:</label>
+              <input type="number" class="form-control" id="formNroCel" name="nro_cel"
+                     [(ngModel)]="newCelular.nro_cel" #nro_cel="ngModel" required minlength="9"
+                     maxlength="17" placeholder="997991234" pattern="[0-9]{9}" />
+              <div class="alert alert-danger"
+                   *ngIf="nro_cel.invalid && (nro_cel.dirty || nro_cel.touched)">
+                <div *ngIf="nro_cel.errors?.['required']">Nro de celular es requerido</div>
+                <div *ngIf="nro_cel.errors?.['minlength']">
+                  Nro celular debe tener al menos 9 digitos
                 </div>
-                <div *ngIf="nro_celular.errors?.['maxlength']">celular numero de carácteres excedido</div>
-                <div *ngIf="nro_celular.errors?.['pattern']">
-                  Formato de  numero de celular incorrecto.
+                <div *ngIf="nro_cel.errors?.['maxlength']">celular numero de carácteres excedido</div>
+                <div *ngIf="nro_cel.errors?.['pattern']">
+                  Formato de celular incorrecto.
                 </div>
               </div>
             </div>
@@ -181,7 +180,7 @@
                 <tr *ngFor="let celular of celulares; let i = index">
                     <td>{{i+1}}</td>
                     <td>{{ celular.nro_imei }}</td>
-                    <td>{{celular.nro_celular}}</td>
+                    <td>{{celular.nro_cel}}</td>
                     <td>{{celular.modelo?.nombre_modelo}}</td>
                     <td>{{celular.operador?.nombre_operador}}</td>
                     <td>{{celular.empresa?.nombre_empresa}}</td>

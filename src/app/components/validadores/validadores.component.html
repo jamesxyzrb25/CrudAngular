@@ -1,0 +1,244 @@
+<div class="container-fluid">
+    <h3>Listado de Validadores</h3>
+    <hr />
+    <!-- Button trigger modal -->
+    <button type="button" class="mb-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#validadorModal"
+        (click)="cleanForm()">
+        Agregar Validador
+    </button>
+    <!-- Modal insert -->
+    <div class="modal fade m-3" id="validadorModal" tabindex="-1" aria-labelledby="validadorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="validadorModalLabel" *ngIf="newValidador.id == 0 else elseBlockTitle">
+                        Agregar
+                        Validador
+                    </h5>
+                    <ng-template #elseBlockTitle>
+                        <h5>Editar Validador</h5>
+                    </ng-template>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        #btnCerrar></button>
+                </div>
+                <form action="" #validadorForm="ngForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="formEmpresa">Empresa: </label>
+                            <select [compareWith]="compareEmpresa" class="form-control" id="formEmpresa" name="empresa"
+                                required [(ngModel)]="newValidador.empresa" (change)="getEquiposxEmpresa($event)"
+                                #empresa="ngModel">
+                                <option selected="selected" disabled [ngValue]="undefined">--- Seleccione una empresa
+                                    ---
+                                </option>
+                                <option *ngFor="let empresa of empresas" [ngValue]="empresa">
+                                    {{ empresa.nombre_empresa }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>ID:</label>
+                            <input type="text" [(ngModel)]="newValidador.id" name="id" class="form-control"
+                                disabled="disabled" />
+                            <small class="form-text text-muted">Este campo es autogenerado</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="formCodigoBD" class="form-label">BD:</label>
+                            <input type="number" class="form-control" id="formCodigoBD" name="codigo_bd"
+                                [(ngModel)]="newValidador.codigo_bd" #codigo_bd="ngModel" required minlength="1"
+                                maxlength="4" placeholder="123" pattern="[0-9]{3}" />
+                            <div class="alert alert-danger"
+                                *ngIf="codigo_bd.invalid && (codigo_bd.dirty || codigo_bd.touched)">
+                                <div *ngIf="codigo_bd.errors?.['required']">BD es requerido</div>
+                                <div *ngIf="codigo_bd.errors?.['minlength']">
+                                    BD debe tener al menos 1 digito
+                                </div>
+                                <div *ngIf="codigo_bd.errors?.['maxlength']">Nro de BD excedido</div>
+                                <div *ngIf="codigo_bd.errors?.['pattern']">
+                                    Formato incorrecto. Ingrese un validador con BD valido
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-group row">
+                                <div class="form-group col-md-7">
+                                    <label for="formNroImei" class="form-label">
+                                        IMEI:
+                                    </label>
+                                    <select [compareWith]="compareCelularImei" class="form-control" id="formNroImei"
+                                        name="celular" [(ngModel)]="newValidador.celular" #celular="ngModel" required>
+                                        <option disabled [ngValue]="undefined">--- Seleccione un IMEI ---</option>
+                                        <option *ngFor="let celular of celulares" [ngValue]="celular">
+                                            {{ celular.nro_imei }}
+                                        </option>
+                                    </select>
+                                    <div class="alert alert-danger"
+                                        *ngIf="celular.invalid && (celular.dirty || celular.touched)">
+                                        <div *ngIf="celular.errors?.['required']">IMEI es requerido</div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-5">
+                                    <label for="formModeloCel" class="form-label">Modelo:</label>
+                                    <input type="text" id="formModeloCel" class="form-control" disabled="disabled"
+                                        name="modelo" [ngModel]="newValidador.celular?.modelo?.nombre_modelo" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="form-group col-md-7">
+                                    <label for="formNroCel" class="form-label">
+                                        Nro de cel:
+                                    </label>
+                                    <input type="text" id="formNroCel" class="form-control" disabled="disabled"
+                                        name="nro_cel" [ngModel]="newValidador.celular?.nro_cel">
+                                </div>
+                                <div class="form-group col-md-5">
+                                    <label for="formOperador" class="form-label">
+                                        Operador:
+                                    </label>
+                                    <input type="text" id="formOperador" class="form-control" disabled="disabled"
+                                        name="operador" [ngModel]="newValidador.celular?.operador?.nombre_operador" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="form-group col-md-6">
+                                <label for="formCodigoImpresora" class="form-label">
+                                    Serie impresora:
+                                </label>
+                                <select [compareWith]="compareImpresora" class="form-control" id="formCodigoImpresora"
+                                    name="impresora" [(ngModel)]="newValidador.impresora" #impresora="ngModel" required>
+                                    <option disabled [ngValue]="undefined">--- Seleccione un codigo o serie de impresora
+                                        ---
+                                    </option>
+                                    <option *ngFor="let impresora of impresoras" [ngValue]="impresora">
+                                        {{ impresora.codigo }}
+                                    </option>
+                                </select>
+                                <div class="alert alert-danger"
+                                    *ngIf="impresora.invalid && (impresora.dirty || impresora.touched)">
+                                    <div *ngIf="impresora.errors?.['required']">Codigo o serie de impresora es
+                                        requerido</div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="formCodigoPos" class="form-label">
+                                    Serie Pos:
+                                </label>
+                                <select [compareWith]="comparePos" class="form-control" id="formCodigoPos" name="pos"
+                                    [(ngModel)]="newValidador.pos" #pos="ngModel" required>
+                                    <option disabled [ngValue]="undefined">--- Seleccione un numero de serie POS---
+                                    </option>
+                                    <option *ngFor="let pos of posList" [ngValue]="pos">
+                                        {{ pos.nro_serie }}
+                                    </option>
+                                </select>
+                                <div class="alert alert-danger" *ngIf="pos.invalid && (pos.dirty || pos.touched)">
+                                    <div *ngIf="pos.errors?.['required']">Codigo o serie de pos es
+                                        requerido</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="formFecha" class="form-label">Fecha de salida:</label>
+                            <input type="date" class="form-control" id="formFecha" name="fecha_salida"
+                                [(ngModel)]="this.newValidador.fecha_salida" #fecha_salida="ngModel" required />
+                            <div class="alert alert-danger"
+                                *ngIf="fecha_salida.invalid && (fecha_salida.dirty || fecha_salida.touched)">
+                                <div *ngIf="fecha_salida.errors?.['required']">Fecha es requerido</div>
+                                <div *ngIf="fecha_salida.errors?.['date']">Debe ser una fecha valida</div>
+                                <div *ngIf="fecha_salida.errors?.['min']">Debe ingresar una fecha más actual</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="formObservacion" class="form-label">Observación:</label>
+                            <textarea class="form-control" id="formObservacion" name="observacion" rows="3"
+                                [(ngModel)]="newValidador.observacion" #observacion="ngModel" required
+                                minlength="2"></textarea>
+                            <div class="alert alert-danger"
+                                *ngIf="observacion.invalid && (observacion.dirty || observacion.touched)">
+                                <div *ngIf="observacion.errors?.['required']">Observación es requerido</div>
+                                <div *ngIf="observacion.errors?.['minlength']">
+                                    Observación debe tener al menos 2
+                                    caracteres
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="form-group row">
+                            <div class="col-sm-6">
+                                <button [disabled]="!validadorForm.form.valid" *ngIf="!newValidador.id else elseBlock"
+                                    (click)="insertValidador(validadorForm)" role="button" class="btn btn-success">
+                                    Save
+                                </button>
+                                <ng-template #elseBlock>
+                                    <button [disabled]="!validadorForm.form.valid" (click)="updateValidador()"
+                                        role="button" class="btn btn-primary">
+                                        Update
+                                    </button>
+                                </ng-template>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--Fin add Modal-->
+    <!--Tabla con la lista-->
+    <div>
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>N°</th>
+                    <th>Empresa</th>
+                    <th>BD</th>
+                    <th>IMEI</th>
+                    <th>Nro Cel</th>
+                    <th>Modelo</th>
+                    <th>Operador</th>
+                    <th>Serie impresora</th>
+                    <th>Serie POS</th>
+                    <th>Fecha de salida</th>
+                    <th>Observación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="validadores?.length !=0">
+                <tr *ngFor="let validador of validadores; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{validador.empresa?.nombre_empresa}}</td>
+                    <td>{{ validador.codigo_bd }}</td>
+                    <td>{{validador.celular?.nro_imei}}</td>
+                    <td>{{validador.celular?.nro_cel}}</td>
+                    <td>{{validador.celular?.modelo?.nombre_modelo}}</td>
+                    <td>{{validador.celular?.operador?.nombre_operador}}</td>
+                    <td>{{validador.impresora?.codigo}}</td>
+                    <td>{{validador.pos?.nro_serie}}</td>
+                    <td>{{ validador.fecha_salida | date:"dd, MMMM yyyy"}}</td>
+                    <td>{{ validador.observacion }}</td>
+                    <td>
+                        <div>
+                            <button type="button" name="editar" data-bs-toggle="modal" data-bs-target="#validadorModal"
+                                (click)="onUpdateModalValidador(validador.id)" class="m-2 btn btn-primary btn-sm">
+                                Editar
+                            </button>
+                            <button type="button" name="eliminar" (click)="deleteValidador(validador)"
+                                class="btn btn-danger btn-sm">
+                                Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody *ngIf="validadores?.length == 0">
+                <tr>
+                    <td colspan="7" class="no-data-avaliable text-center">No data</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!--Fin tabla-->
+</div>

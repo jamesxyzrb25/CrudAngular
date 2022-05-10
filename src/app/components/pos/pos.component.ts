@@ -32,10 +32,10 @@ export class PosComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.chRef.detectChanges();
     this.gestionSrv.getPosList()
       .subscribe(result =>{
         this.posList = result;
-        this.chRef.detectChanges();
       });
     
     this.gestionSrv.getEmpresaList()
@@ -66,7 +66,6 @@ export class PosComponent implements OnInit {
     this.gestionSrv.insertPos(value)
       .subscribe(() => {
           this.posList.push(value);
-          console.log(value);
           swal('Nuevo POS', `El POS id: ${value.id}| Nro de serie: ${value.nro_serie} ha sido creado con éxito`, 'success');
 
     });
