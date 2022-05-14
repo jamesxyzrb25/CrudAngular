@@ -208,7 +208,7 @@
             </thead>
             <tbody *ngIf="validadores?.length !=0">
                 <tr *ngFor="let validador of validadores; let i = index">
-                    <td>{{i+1}}</td>
+                    <td>{{validador.id}}</td>
                     <td>{{validador.empresa?.nombre_empresa}}</td>
                     <td>{{ validador.codigo_bd }}</td>
                     <td>{{validador.celular?.nro_imei}}</td>
@@ -239,6 +239,7 @@
                 </tr>
             </tbody>
         </table>
+        <app-paginator *ngIf="paginator" [paginator]="paginator" [routePaginator]="routePaginator"></app-paginator>
     </div>
     <!--Fin tabla-->
 </div>

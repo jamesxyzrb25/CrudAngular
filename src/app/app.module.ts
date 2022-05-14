@@ -11,6 +11,7 @@ import { GestionService } from './services/gestion.service';
 import { ImpresorasComponent } from './components/impresoras/impresoras.component';
 import { CelularesComponent } from './components/celulares/celulares.component';
 import { ValidadoresComponent } from './components/validadores/validadores.component';
+import { PaginatorComponent } from './components/paginator/paginator.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { ValidadoresComponent } from './components/validadores/validadores.compo
     PosComponent,
     ImpresorasComponent,
     CelularesComponent,
-    ValidadoresComponent
+    ValidadoresComponent,
+    PaginatorComponent
   ],
   imports: [
     BrowserModule,

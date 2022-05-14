@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { CelularModel } from 'src/app/models/celular.model';
 import { EmpresaModel } from 'src/app/models/empresa.model';
@@ -23,19 +24,37 @@ export class CelularesComponent implements OnInit {
   modelos: ModeloModel[] = [];
   operadores: OperadorModel[] = [];
 
+  paginator: any;
+  routePaginator:string = '/celulares/page';
+
   @ViewChild("celularForm", { static: false }) celularForm?: NgForm;
   @ViewChild("btnCerrar", { static: false }) btnCerrar?: ElementRef;
 
   constructor(private gestionSrv: GestionService,
-              private chRef: ChangeDetectorRef) { }
+              private chRef: ChangeDetectorRef,
+              private activatedRoute:ActivatedRoute) { }
 
   ngOnInit(): void {
 
     this.chRef.detectChanges();
-    this.gestionSrv.getCelulares()
+
+    this.activatedRoute.paramMap.subscribe(params =>{
+      let page:number = +params.get('page')!;
+      if(!page){
+        page=0;
+      }
+      this.gestionSrv.getCelularesPage(page)
+        .subscribe(
+          result =>{
+            this.celulares = result.content;
+            this.paginator = result;
+        });
+    });
+
+    /* this.gestionSrv.getCelulares()
       .subscribe(result =>{
         this.celulares = result;
-      });
+      }); */
 
       this.gestionSrv.getEmpresaList()
       .subscribe((result) =>{

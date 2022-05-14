@@ -8,9 +8,13 @@ import { ValidadoresComponent } from './components/validadores/validadores.compo
 const routes: Routes = [
   {path: '', redirectTo:'', pathMatch:'full'},
   {path:'pos', component: PosComponent},
+  {path:'pos/page/:page', component: PosComponent},
   {path:'impresoras', component: ImpresorasComponent},
+  {path:'impresoras/page/:page', component: ImpresorasComponent},
   {path:'celulares', component:CelularesComponent},
-  {path:'validadores', component:ValidadoresComponent}
+  {path:'celulares/page/:page', component:CelularesComponent},
+  {path:'validadores', component:ValidadoresComponent},
+  {path:'validadores/page/:page', component:ValidadoresComponent}
 ];
 
 @NgModule({

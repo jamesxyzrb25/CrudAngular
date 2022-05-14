@@ -126,7 +126,7 @@
       <!--Fin modal insert-->
       <!--Tabla con la lista-->
       <div>
-        <table class="table">
+        <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
                     <th>N°</th>
@@ -140,7 +140,7 @@
             </thead>
             <tbody *ngIf="impresoras?.length !=0">
                 <tr *ngFor="let impresora of impresoras; let i = index">
-                    <td>{{i+1}}</td>
+                    <td>{{impresora.id}}</td>
                     <td>{{ impresora.codigo }}</td>
                     <td>{{impresora.modelo?.nombre_modelo}}</td>
                     <td>{{impresora.empresa?.nombre_empresa}}</td>
@@ -166,6 +166,7 @@
                 </tr>
             </tbody>
         </table>
+        <app-paginator *ngIf="paginator" [paginator]="paginator" [routePaginator]="routePaginator"></app-paginator>
     </div>
   </div>
   

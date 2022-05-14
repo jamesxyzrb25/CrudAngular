@@ -141,7 +141,7 @@
     <!--Fin add Modal-->
     <!--Tabla con la lista-->
     <div>
-        <table class="table">
+        <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
                     <th>N°</th>
@@ -154,8 +154,8 @@
                 </tr>
             </thead>
             <tbody *ngIf="posList?.length !=0">
-                <tr *ngFor="let pos of posList; let i = index">
-                    <td>{{i+1}}</td>
+                <tr *ngFor="let pos of posList">
+                    <td>{{pos.id}}</td>
                     <td>{{ pos.nro_serie }}</td>
                     <td>{{pos.modelo?.nombre_modelo}}</td>
                     <td>{{pos.empresa?.nombre_empresa}}</td>
@@ -181,6 +181,7 @@
                 </tr>
             </tbody>
         </table>
+        <app-paginator *ngIf="paginator" [paginator]="paginator" [routePaginator]="routePaginator"></app-paginator>
     </div>
     <!--Fin tabla-->
 </div>

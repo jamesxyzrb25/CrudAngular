@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, NgForm } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { CelularModel } from 'src/app/models/celular.model';
 import { EmpresaModel } from 'src/app/models/empresa.model';
@@ -26,19 +27,37 @@ export class ValidadoresComponent implements OnInit {
   impresoras: ImpresoraModel[] = [];
   empresas: EmpresaModel[]=[];
 
+  paginator:any;
+  routePaginator:string ='/validadores/page';
+
   @ViewChild("validadorForm", { static: false }) validadorForm?: NgForm;
   @ViewChild("btnCerrar", { static: false }) btnCerrar?: ElementRef;
 
   constructor(private gestionSrv: GestionService,
-              private chRef: ChangeDetectorRef) {}
+              private chRef: ChangeDetectorRef,
+              private activatedRoute:ActivatedRoute) {}
 
   ngOnInit(): void {
 
     this.chRef.detectChanges();
-    this.gestionSrv.getValidadores()
+
+    this.activatedRoute.paramMap.subscribe(params =>{
+      let page:number = +params.get('page')!;
+      if(!page){
+        page=0;
+      }
+      this.gestionSrv.getValidadoresPage(page)
+        .subscribe(
+          result =>{
+            this.validadores = result.content;
+            this.paginator = result;
+        });
+    });
+
+    /* this.gestionSrv.getValidadores()
       .subscribe(result =>{
         this.validadores = result;
-      })
+      }) */
 
      this.gestionSrv.getEmpresaList()
       .subscribe((result) =>{

@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import * as moment from 'moment';
 import { EmpresaModel } from 'src/app/models/empresa.model';
 import { ImpresoraModel } from 'src/app/models/impresora.model';
@@ -21,19 +22,37 @@ export class ImpresorasComponent implements OnInit {
   empresas: EmpresaModel[] = [];
   modelos: ModeloModel[] = [];
 
+  paginator: any;
+  routePaginator: string='/impresoras/page';
+
   @ViewChild("impresoraForm", { static: false }) impresoraForm?: NgForm;
   @ViewChild("btnCerrar", { static: false }) btnCerrar?: ElementRef;
 
   constructor(private gestionSrv: GestionService,
-              private chRef: ChangeDetectorRef) { }
+              private chRef: ChangeDetectorRef,
+              private activatedRoute:ActivatedRoute) { }
 
   ngOnInit(): void {
 
     this.chRef.detectChanges();
-    this.gestionSrv.getImpresoras()
+
+    this.activatedRoute.paramMap.subscribe(params =>{
+      let page:number = +params.get('page')!;
+      if(!page){
+        page=0;
+      }
+      this.gestionSrv.getImpresorasPage(page)
+        .subscribe(
+          result =>{
+            this.impresoras = result.content;
+            this.paginator = result;
+        });
+    });
+
+    /* this.gestionSrv.getImpresoras()
       .subscribe(result =>{
         this.impresoras = result;
-      });
+      }); */
 
     this.gestionSrv.getEmpresaList()
       .subscribe((result) =>{

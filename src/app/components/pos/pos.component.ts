@@ -8,6 +8,7 @@ import { GestionService } from 'src/app/services/gestion.service';
 
 import swal from 'sweetalert2';
 import * as moment from 'moment';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -24,19 +25,36 @@ export class PosComponent implements OnInit {
   empresas: EmpresaModel[] = [];
   modelos: ModeloModel[] = [];
 
+  paginator: any;
+  routePaginator:string='/pos/page';
+
   @ViewChild("posForm", { static: false }) posForm?: NgForm;
   @ViewChild("btnCerrar", { static: false }) btnCerrar?: ElementRef;
 
   constructor(private gestionSrv: GestionService,
-              private chRef: ChangeDetectorRef) { }
+              private chRef: ChangeDetectorRef,
+              private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-
+    
     this.chRef.detectChanges();
-    this.gestionSrv.getPosList()
+    this.activatedRoute.paramMap.subscribe(params =>{
+      let page:number = +params.get('page')!;
+      if(!page){
+        page=0;
+      }
+      this.gestionSrv.getPosListPage(page)
+        .subscribe(
+          result =>{
+            this.posList = result.content;
+            this.paginator = result;
+        });
+    })
+    
+    /* this.gestionSrv.getPosList()
       .subscribe(result =>{
         this.posList = result;
-      });
+      }); */
     
     this.gestionSrv.getEmpresaList()
       .subscribe((result) =>{

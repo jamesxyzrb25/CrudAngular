@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import swal from 'sweetalert2';
 import { CelularModel } from '../models/celular.model';
 import { EmpresaModel } from '../models/empresa.model';
@@ -35,6 +35,20 @@ export class GestionService {
 
 
   constructor(private http:HttpClient) { }
+
+  //Pagination
+  getPosListPage(page: number): Observable<any>{
+    return this.http.get(this.urlEndPointPos+'/page/'+page);
+  }
+  getImpresorasPage(page: number): Observable<any>{
+    return this.http.get(this.urlEndPointImpresoras+'/page/'+page);
+  }
+  getCelularesPage(page: number):Observable<any>{
+    return this.http.get(this.urlEndPointCelulares+'/page/'+page);
+  }
+  getValidadoresPage(page: number):Observable<any>{
+    return this.http.get(this.urlEndPointValidadores+'/page/'+page);
+  }
 
   //Listar 
   getPosList(): Observable<PosModel[]> {
