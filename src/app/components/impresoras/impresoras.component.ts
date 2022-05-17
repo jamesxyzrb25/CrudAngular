@@ -112,6 +112,7 @@ export class ImpresorasComponent implements OnInit {
 
   updateImpresora(){
     this.editImpresora = this.newImpresora;
+    console.log("Update pos: "+this.editImpresora);
     this.gestionSrv.updateImpresora(this.editImpresora)
       .subscribe(() =>{
         this.impresoras= this.impresoras.map(imp=> imp.id === this.editImpresora.id ?{...this.impresoras, ...this.editImpresora}:imp);

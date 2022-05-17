@@ -1,15 +1,16 @@
 import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { EmpresaModel } from 'src/app/models/empresa.model';
 import { ModeloModel } from 'src/app/models/modelo.model';
 import { PosModel } from 'src/app/models/pos.model';
 import { GestionService } from 'src/app/services/gestion.service';
+import { CustomValidator } from 'src/app/validators/custom-validator';
 
 import swal from 'sweetalert2';
 import * as moment from 'moment';
-import { ActivatedRoute } from '@angular/router';
-
 
 @Component({
   selector: 'app-pos',
@@ -17,6 +18,8 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./pos.component.css']
 })
 export class PosComponent implements OnInit {
+
+  posFormGroup: FormGroup;
 
   newPos = new PosModel();
   editPos = new PosModel();
@@ -30,13 +33,30 @@ export class PosComponent implements OnInit {
 
   @ViewChild("posForm", { static: false }) posForm?: NgForm;
   @ViewChild("btnCerrar", { static: false }) btnCerrar?: ElementRef;
+  
 
   constructor(private gestionSrv: GestionService,
+              private customVal:CustomValidator,
               private chRef: ChangeDetectorRef,
-              private activatedRoute: ActivatedRoute) { }
+              private activatedRoute: ActivatedRoute) 
+              { 
+                this.posFormGroup = new FormGroup({
+                  'id': new FormControl(),
+                  'nro_serie': new FormControl('', [
+                                                    Validators.required, 
+                                                    Validators.pattern("[5]{1}[B,b,D,d]{1}[0-9]{6}"),
+                                                    Validators.minLength(8),
+                                                    Validators.maxLength(8)                           
+                                                    ],[this.customVal.nroSerieValidator()]),
+                  'modelo': new FormControl('', Validators.required),
+                  'empresa': new FormControl('', Validators.required),
+                  'fecha_ingreso': new FormControl('', Validators.required),
+                  'observacion': new FormControl('', [Validators.required, Validators.minLength(2)])
+                })
+                
+              }
 
   ngOnInit(): void {
-    
     this.chRef.detectChanges();
     this.activatedRoute.paramMap.subscribe(params =>{
       let page:number = +params.get('page')!;
@@ -50,12 +70,7 @@ export class PosComponent implements OnInit {
             this.paginator = result;
         });
     })
-    
-    /* this.gestionSrv.getPosList()
-      .subscribe(result =>{
-        this.posList = result;
-      }); */
-    
+  
     this.gestionSrv.getEmpresaList()
       .subscribe((result) =>{
       this.empresas = result;
@@ -79,12 +94,20 @@ export class PosComponent implements OnInit {
     }
     return false;
   }
+  
+  cleanForm(){
+    this.posFormGroup.reset();
+    this.chRef.detectChanges();
+    this.newPos.id = 0;
+    this.posFormGroup.controls['fecha_ingreso'].setValue(moment().format('YYYY-MM-DD'));
+  }
 
-  insertPos({value}: {value: PosModel}) {
-    this.gestionSrv.insertPos(value)
+  insertPos() {
+    this.newPos = this.posFormGroup.value;
+    this.gestionSrv.insertPos(this.newPos)
       .subscribe(() => {
-          this.posList.push(value);
-          swal('Nuevo POS', `El POS id: ${value.id}| Nro de serie: ${value.nro_serie} ha sido creado con éxito`, 'success');
+          this.posList.push(this.newPos);
+          swal('Nuevo POS', `El POS id: ${this.newPos.id}| Nro de serie: ${this.newPos.nro_serie} ha sido creado con éxito`, 'success');
 
     });
     this.posForm?.resetForm();
@@ -94,24 +117,22 @@ export class PosComponent implements OnInit {
   private cerrarModal(){
     this.btnCerrar?.nativeElement.click();
   }
-  cleanForm(){
-    this.posForm?.resetForm();
-    this.chRef.detectChanges();
-    this.newPos.id = 0;
-    this.newPos.fecha_ingreso = moment().format('YYYY-MM-DD');
-  }
+  
   onUpdateModalPos(id?:number){
+    this.posFormGroup.controls['nro_serie'].clearAsyncValidators();
     if(id){
       this.gestionSrv.getPosId(id)
         .subscribe((data) =>{
-          this.newPos = data;
+          this.newPos.id = data.id;
+          this.posFormGroup.setValue(data);        
       });
     }else{
       swal('Atención',`El id: ${id} no existe`,'error');
     }
   }
+  
   updatePos(){
-    this.editPos = this.newPos;
+    this.editPos = this.posFormGroup.value;
     this.gestionSrv.updatePos(this.editPos)
       .subscribe(() =>{
         this.posList= this.posList.map(p => p.id === this.editPos.id ?{...this.posList, ...this.editPos}:p);

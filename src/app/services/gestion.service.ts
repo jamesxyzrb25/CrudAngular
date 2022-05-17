@@ -27,6 +27,7 @@ export class GestionService {
   private urlEndPointPosxEmpresa = 'http://localhost:8080/api/posxEmpresa';
   private urlEndPointCelularesxEmpresa = 'http://localhost:8080/api/celularesxEmpresa';
   private urlEndPointImpresorasxEmpresa = 'http://localhost:8080/api/impresorasxEmpresa';
+  private urlEndPointGetByNroSerie='http://localhost:8080/api/pos/getByNroSerie';
 
   private urlEndPointPos = 'http://localhost:8080/api/pos';
   private urlEndPointCelulares = 'http://localhost:8080/api/celulares';
@@ -234,6 +235,14 @@ export class GestionService {
     return this.http.get<ImpresoraModel[]>(this.urlEndPointImpresorasxEmpresa+"/"+id, {headers: this.httpHeaders});
   }
 
-
+  /* getByNroSerie(nro_serie:string):Observable<PosModel[]|undefined>{
+    
+    //return this.http.get<string[]>(this.urlEndPointGetByNroSerie);
+  } */
+  
+  getByNroSerie():Observable<string[]>{
+    return this.http.get<string[]>(this.urlEndPointGetByNroSerie);
+  }
 
 }
+    

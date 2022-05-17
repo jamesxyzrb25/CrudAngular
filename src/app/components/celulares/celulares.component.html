@@ -67,9 +67,10 @@
               <label for="formOperador" class="form-label">
                 Operador:
               </label>
-              <select [compareWith]="compareOperador"
-                      class="form-control" id="formOperador" name="operador" [(ngModel)]="newCelular.operador"
-                      #operador="ngModel" required>
+              <select 
+                [compareWith]="compareOperador"
+                class="form-control" id="formOperador" name="operador" [(ngModel)]="newCelular.operador"
+                #operador="ngModel" required>
                 <option disabled [ngValue]="undefined">--- Seleccione un operador ---</option>
                 <option *ngFor="let operador of operadores" [ngValue]="operador">
                   {{ operador.nombre_operador }}
